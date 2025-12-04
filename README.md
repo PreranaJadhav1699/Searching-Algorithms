@@ -1,99 +1,35 @@
-1. Overview
+# 🔍 Search Algorithms Comparison Project
 
-This project compares four different search algorithms:
+## Overview
+This project compares **four different search algorithms**:
 
-Linear Search
+- Linear Search  
+- Binary Search (on a sorted array)  
+- Binary Search Tree (BST) Search  
+- Red-Black Tree Search  
 
-Binary Search (on a sorted array)
+The project is built in **Python using Flask** with a simple HTML interface.  
+Users can input an array, choose a target value, select an algorithm, and view:
 
-Binary Search Tree (BST) search
+- Whether the target was found  
+- How long the search took  
+- A table comparing all four algorithms  
+- A line chart showing running time vs input size  
 
-Red-Black Tree search
+The main goal is to observe how running time changes as input size grows and how each algorithm behaves differently.
 
-The program is built in Python using Flask and a small HTML page.
-The user can enter an array, choose a target value, pick an algorithm, and see:
+---
 
-whether the target was found
+## Requirements
 
-how long the search took
-a table comparing all four algorithms
-a line chart that shows running time vs. input size
+- Python 3  
+- Flask library  
 
-The main idea is to observe how the running time changes when the input size grows and how the algorithms behave differently.
+---
 
-2. Requirements
+## How to Run the Project
 
-Python 3
-
-Flask library
-
-3. How to Run the Project
-
-Download the project ZIP archive.
-
-Extract the folder to a location on your system.
-
-Open a terminal / command prompt in the extracted project directory (the one with main.py).
-
-Install Flask (only needed once):
-
-pip install flask
-
-Start the program:
-
-python main.py
-
-4. Files in the Project
-
-main.py
-
-Contains all four search algorithms.
-
-Implements the Binary Search Tree and Red-Black Tree structures.
-
-Handles timing for each algorithm.
-
-Defines the Flask route that connects the backend to the HTML page.
-
-templates/home.html
-
-Front-end page for the project.
-
-Has the form for entering the array, target, and algorithm choice.
-
-Includes a random array generator (JavaScript).
-
-Shows the result message, comparison table, and performance chart (using Chart.js).
-
-5. How the Interface Works
-
-On the web page, the user can:
-
-Enter an array as comma-separated numbers (for example: 3,7,1,56,34).
-
-Optionally, generate a random test array by providing:
-
-minimum value (From),
-
-maximum value (To),
-
-number of elements (Count).
-
-Enter the target value to search for.
-
-Select one of the four algorithms from the dropdown list.
-
-Click “Run Search” to send the data to the backend.
-
-After running:
-
-A short message shows if the target was found or not (and indices for linear search).
-
-A table lists all four algorithms with:
-
-whether they found the target,
-
-and their running time in seconds.
-
-A line chart displays input sizes on the x-axis and time on the y-axis for all algorithms.
-
+1. Download the project ZIP archive.  
+2. Extract the folder to any location on your system.  
+3. Open a terminal / command prompt inside the extracted directory (where `main.py` is located).  
+4. Install Flask (only required once):
