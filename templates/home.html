@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Searching Algorithm Comparison Tool</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 300px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .chart-container {
+            margin-top: 20px;
+            height: 400px;
+        }
+        .random-gen {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+        .random-gen input {
+            width: 100px;
+            margin-right: 10px;
+        }
+        .random-gen button {
+            background-color: #2196F3;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Searching Algorithm Comparison Tool</h1>
+        <form method="POST">
+            <label>Enter numbers</label>
+            <input type="text" name="numbers" id="numbers" required placeholder="e.g., 3,7,1,56,34" value="{{ numbers if numbers else '' }}">
+            
+            <div class="random-gen">
+                <label>Generate random test array</label><br>
+                <input type="number" id="startNum" placeholder="From" min="0">
+                <input type="number" id="endNum" placeholder="To" min="0">
+                <input type="number" id="count" placeholder="Count" min="1" max="10000">
+                <button type="button" onclick="generateRandom()">Generate</button>
+            </div>
+            
+            <label>Target value to search</label>
+            <input type="number" name="target" required value="{{ target if target else '' }}">
+            
+            <label>Choose algorithm</label>
+            <select name="method">
+                <option value="linear" {% if method == 'linear' %}selected{% endif %}>Linear Search</option>
+                <option value="binary" {% if method == 'binary' %}selected{% endif %}>Binary Search in sorted array</option>
+                <option value="bst" {% if method == 'bst' %}selected{% endif %}>Binary Search Tree</option>
+                <option value="rbt" {% if method == 'rbt' %}selected{% endif %}>Red-Black Tree</option>
+            </select>
+            
+            <button type="submit">Run Search</button>
+        </form>
+        
+        <script>
+        function generateRandom() {
+        var startNum = parseInt(document.getElementById('startNum').value);
+        var endNum = parseInt(document.getElementById('endNum').value);
+        var numCount = parseInt(document.getElementById('count').value);
+        
+        if (!startNum || !endNum || !numCount) {
+        alert('Please fill all fields');
+        return;
+        }
+        
+        if (startNum >= endNum) {
+        alert('Start should be less than end');
+        return;
+        }
+        
+        if (numCount > 10000) {
+        alert('Max count is 10000');
+        return;
+        }
+        
+        var randomNums = [];
+        for (var i = 0; i < numCount; i++) {
+        var randomNum = Math.floor(Math.random() * (endNum - startNum + 1)) + startNum;
+        randomNums.push(randomNum);
+        }
+        
+        document.getElementById('numbers').value = randomNums.join(',');
+        }
+        </script>
+        
+        {% if result %}
+            <h2>Search Result:</h2>
+            <p>{{ result }}</p>
+        {% endif %}
+        
+        {% if all_compare %}
+        <h2>Performance Analysis</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Algorithm</th>
+                    <th>Found</th>
+                    <th>Time (seconds)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for algo_name, algo_data in all_compare.items() %}
+                    <tr>
+                        <td>{{ algo_name }}</td>
+                        <td>{{ "Yes" if algo_data.found else "No" }}</td>
+                        <td>{{ "%.8f"|format(algo_data.time) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+        
+        {% if perf_data %}
+        <h2>Performance Chart</h2>
+        <div class="chart-container">
+            <canvas id="chart"></canvas>
+        </div>
+        
+        <script>
+        var chartData = {{ perf_data|tojson }};
+        var chartCtx = document.getElementById('chart').getContext('2d');
+        new Chart(chartCtx, {
+        type: 'line',
+        data: {
+        labels: chartData.sizes,
+        datasets: [
+        {
+        label: 'Linear Search',
+        data: chartData.linear,
+        borderColor: 'rgb(255, 99, 132)',
+        tension: 0.1
+        },
+        {
+        label: 'Binary Search',
+        data: chartData.binary,
+        borderColor: 'rgb(54, 162, 235)',
+        tension: 0.1
+        },
+        {
+        label: 'BST',
+        data: chartData.bst,
+        borderColor: 'rgb(255, 205, 86)',
+        tension: 0.1
+        },
+        {
+        label: 'Red-Black Tree',
+        data: chartData.rbt,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+        }
+        ]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+        title: {
+        display: true,
+        text: 'Performance Comparison'
+        }
+        },
+        scales: {
+        x: {
+        title: {
+        display: true,
+        text: 'Input Size'
+        }
+        },
+        y: {
+        title: {
+        display: true,
+        text: 'Time (seconds)'
+        }
+        }
+        }
+        }
+        });
+        </script>
+        {% endif %}
+    </div>
+</body>
+</html>
+
